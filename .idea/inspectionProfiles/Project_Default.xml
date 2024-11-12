@@ -1,0 +1,55 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="11">
+            <item index="0" class="java.lang.String" itemvalue="slack-sdk" />
+            <item index="1" class="java.lang.String" itemvalue="grpcio" />
+            <item index="2" class="java.lang.String" itemvalue="pandas" />
+            <item index="3" class="java.lang.String" itemvalue="jupyter" />
+            <item index="4" class="java.lang.String" itemvalue="mediapipe" />
+            <item index="5" class="java.lang.String" itemvalue="opencv-python" />
+            <item index="6" class="java.lang.String" itemvalue="numpy" />
+            <item index="7" class="java.lang.String" itemvalue="Flask" />
+            <item index="8" class="java.lang.String" itemvalue="Babel" />
+            <item index="9" class="java.lang.String" itemvalue="prompt-toolkit" />
+            <item index="10" class="java.lang.String" itemvalue="scikit-learn" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N802" />
+          <option value="N806" />
+          <option value="N803" />
+          <option value="N801" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="object.__getitem__" />
+          <option value="list.add" />
+          <option value="set.__add__" />
+          <option value="rasa.shared.core.events.UserUttered.get" />
+          <option value="mediapipe.solutions" />
+          <option value="cv2.cvtColor" />
+          <option value="cv2.resize" />
+          <option value="cv2.COLOR_BGR2RGB" />
+          <option value="cv2.INTER_AREA" />
+          <option value="cv2.COLOR_RGB2BGR" />
+          <option value="cv2.destroyAllWindows" />
+          <option value="cv2.imshow" />
+          <option value="cv2.waitKey" />
+          <option value="object.append" />
+          <option value="object.items" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
