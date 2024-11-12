@@ -2,6 +2,10 @@
 
 import numpy as np
 import collections
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import random
 
 #####################
 # MODELS FOR PART 1 #
@@ -32,11 +36,36 @@ class FrequencyBasedClassifier(ConsonantVowelClassifier):
         else:
             return 1
 
+class RNNModel(nn.Module):
+    """
+    PyTorch RNN model for classifying sequences as being followed by consonants or vowels.
+    """
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim):
+        super(RNNModel, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.rnn = nn.GRU(embedding_dim, hidden_dim, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+        self.softmax = nn.Softmax(dim=1)
+
+    def forward(self, x):
+        embedded = self.embedding(x) # shape: (batch_size, seq_len, embed_dim)
+        _, hidden = self.rnn(embedded) # hidden shape: (1, batch_size, hidden_dim)
+        return self.fc(hidden[-1])  # shape: (batch_size, output_dim) | Take the last hidden state
 
 class RNNClassifier(ConsonantVowelClassifier):
-    def predict(self, context):
-        raise Exception("Implement me")
+    def __init__(self, model, vocab_index):
+        self.model = model
+        self.vocab_index = vocab_index
 
+    def predict(self, context):
+        with torch.no_grad():
+            # Convert each character in the context to its index
+            context_indices = [self.vocab_index.index_of(char) for char in context]
+            # context_tensor = torch.from_numpy(np.asarray(context_indices)).unsqueeze(0)
+            context_tensor = torch.tensor(context_indices).unsqueeze(0) # Add batch dimension | # shape: (1, seq_len)
+            output = self.model(context_tensor)
+            _, predicted = torch.max(output, 1)
+            return predicted.item()
 
 def train_frequency_based_classifier(cons_exs, vowel_exs):
     consonant_counts = collections.Counter()
@@ -58,7 +87,48 @@ def train_rnn_classifier(args, train_cons_exs, train_vowel_exs, dev_cons_exs, de
     :param vocab_index: an Indexer of the character vocabulary (27 characters)
     :return: an RNNClassifier instance trained on the given data
     """
-    raise Exception("Implement me")
+        
+    # Hyperparameters
+    vocab_size = len(vocab_index)
+    embedding_dim = 10
+    hidden_dim = 30
+    output_dim = 2  # 0: consonant, 1: vowel (Binary classification)
+    learning_rate = 0.0005
+    epochs = 10
+
+    # Initialize model, optimizer and loss
+    model = RNNModel(vocab_size, embedding_dim, hidden_dim, output_dim)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    criterion = nn.CrossEntropyLoss()
+
+    # Prepare and shuffle training data
+    train_data = [(ex, 0) for ex in train_cons_exs] + [(ex, 1) for ex in train_vowel_exs]
+
+    for epoch in range(epochs):
+        model.train()
+        epoch_loss = 0
+
+        # Shuffle data at the start of each epoch
+        random.shuffle(train_data)
+
+        for ex, label in train_data:
+                ex_indices = [vocab_index.index_of(char) for char in ex]
+                # input_tensor = torch.from_numpy(np.asarray(ex_indices)).unsqueeze(0)
+                input_tensor = torch.tensor(ex_indices).unsqueeze(0)  # shape: (1, seq_len)
+                target_tensor = torch.tensor([label])  # shape: (1)
+
+                optimizer.zero_grad()
+                output = model(input_tensor)
+                loss = criterion(output, target_tensor)
+                loss.backward()
+                optimizer.step()
+
+                epoch_loss += loss.item()
+
+        print(f"Epoch {epoch + 1}, Loss: {epoch_loss:.4f}")
+
+    return RNNClassifier(model, vocab_index)
+
 
 
 #####################
