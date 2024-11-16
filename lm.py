@@ -18,7 +18,7 @@ def _parse_args():
     """
     parser = argparse.ArgumentParser(description='lm.py')
     parser.add_argument('--model', type=str, default='UNIFORM', help='model to run (UNIFORM or RNN)')
-    parser.add_argument('--train_path', type=str, default=' ', help='path to train set (you should not need to modify)')
+    parser.add_argument('--train_path', type=str, default='data/text8-100k.txt', help='path to train set (you should not need to modify)')
     parser.add_argument('--dev_path', type=str, default='data/text8-dev.txt', help='path to dev set (you should not need to modify)')
     args = parser.parse_args()
     return args
